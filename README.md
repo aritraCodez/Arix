@@ -2,7 +2,7 @@
 
 > A production-grade **Chrome Extension** (Manifest V3) + **FastAPI** backend that delivers real-time trading signals (UP / DOWN / NO_TRADE) with confidence scoring, powered by technical analysis and an optional LSTM deep learning model.
 
-**No API keys required** — all data sources are publicly accessible.
+**No API keys required** — all data sources are publicly accessible no external api keys required for any api calls.
 
 ---
 
@@ -466,9 +466,7 @@ After deploying, update the Chrome extension's API URL via the popup settings.
 ```
 stock-analyzer/
 │
-├── 📄 .env.example              # Environment variable template
-├── 📄 .gitignore
-├── 📄 README.md
+├── 📄 README.md 
 │
 ├── 🧩 extension/                # Chrome Extension (Manifest V3)
 │   ├── manifest.json            # Extension manifest & permissions
@@ -508,12 +506,15 @@ stock-analyzer/
 │   │   ├── locks.py             # Per-symbol async lock manager
 │   │   └── rate_limiter.py      # Sliding window rate limiter middleware
 │   │
-│   └── tests/                   # pytest test suite
+│   ├── tests/                   # pytest test suite
+│   │
+│   ├── .env.example           
+│   └── .gitignore
 │
 └── 🧠 ml/                      # ML Training
     ├── train_lstm.py            # Training script (fetches data from Binance)
     └── saved_models/
-        └── lstm_model.pt        # Trained model weights
+        └── lstm_model.pt        # Trained model weight
 ```
 
 ### Component Dependency Graph
