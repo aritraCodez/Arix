@@ -176,7 +176,7 @@
   async function fetchSignal() {
     if (isFetching) return; // Only one request at a time
     if (pollTimer) clearTimeout(pollTimer);
-    
+
     if (!state.selectedAsset) {
       pollTimer = setTimeout(fetchSignal, 500);
       return;
@@ -189,9 +189,9 @@
     chrome.runtime.sendMessage({ type: 'FETCH_SIGNAL', url }, (res) => {
       isFetching = false;
       const latency = performance.now() - start;
-      
+
       let nextPoll = 500;
-      
+
       if (res && res.status === 429) {
         nextPoll = 2000;
         if (state.signal) state.signal.latency_msg = "RATE LIMITED - SLOWING DOWN";
@@ -210,7 +210,7 @@
         state.signal = { confidence: NaN, latency_msg: "SERVER ERROR" };
         render();
       }
-      
+
       pollTimer = setTimeout(fetchSignal, nextPoll);
     });
   }
@@ -247,14 +247,14 @@
       el.orbMlTag.classList.remove('active');
       el.orbMlTag.title = "Machine Learning Disabled";
     }
-    
+
     // Detailed rows
     if (d && !isNaN(d.up_percent)) {
       el.predUpVal.textContent = `${d.up_percent}%`;
       el.predDownVal.textContent = `${d.down_percent}%`;
       el.statRsi.textContent = d.indicators.rsi.value.toFixed(1);
       el.statMacd.textContent = d.indicators.macd.value.toFixed(4);
-      
+
       let emaTrend = 'NEUTRAL';
       if (d.indicators.ema_trend.value > 0) emaTrend = 'UP ↑';
       else if (d.indicators.ema_trend.value < 0) emaTrend = 'DOWN ↓';
@@ -293,41 +293,41 @@
   // This map converts those names to the correct API symbol + type.
   const NAME_TO_SYMBOL = {
     // Crypto (full names → Binance symbol)
-    'BITCOIN':   { symbol: 'BTCUSDT',   type: 'crypto' },
-    'ETHEREUM':  { symbol: 'ETHUSDT',   type: 'crypto' },
-    'BINANCE':   { symbol: 'BNBUSDT',   type: 'crypto' },
+    'BITCOIN': { symbol: 'BTCUSDT', type: 'crypto' },
+    'ETHEREUM': { symbol: 'ETHUSDT', type: 'crypto' },
+    'BINANCE': { symbol: 'BNBUSDT', type: 'crypto' },
     'BINANCECOIN': { symbol: 'BNBUSDT', type: 'crypto' },
-    'SOLANA':    { symbol: 'SOLUSDT',   type: 'crypto' },
-    'RIPPLE':    { symbol: 'XRPUSDT',   type: 'crypto' },
-    'DOGECOIN':  { symbol: 'DOGEUSDT',  type: 'crypto' },
-    'CARDANO':   { symbol: 'ADAUSDT',   type: 'crypto' },
-    'AVALANCHE': { symbol: 'AVAXUSDT',  type: 'crypto' },
-    'POLKADOT':  { symbol: 'DOTUSDT',   type: 'crypto' },
-    'POLYGON':   { symbol: 'MATICUSDT', type: 'crypto' },
-    'CHAINLINK': { symbol: 'LINKUSDT',  type: 'crypto' },
-    'LITECOIN':  { symbol: 'LTCUSDT',   type: 'crypto' },
-    'TRON':      { symbol: 'TRXUSDT',   type: 'crypto' },
-    'COSMOS':    { symbol: 'ATOMUSDT',  type: 'crypto' },
-    'SHIBA':     { symbol: 'SHIBUSDT',  type: 'crypto' },
+    'SOLANA': { symbol: 'SOLUSDT', type: 'crypto' },
+    'RIPPLE': { symbol: 'XRPUSDT', type: 'crypto' },
+    'DOGECOIN': { symbol: 'DOGEUSDT', type: 'crypto' },
+    'CARDANO': { symbol: 'ADAUSDT', type: 'crypto' },
+    'AVALANCHE': { symbol: 'AVAXUSDT', type: 'crypto' },
+    'POLKADOT': { symbol: 'DOTUSDT', type: 'crypto' },
+    'POLYGON': { symbol: 'MATICUSDT', type: 'crypto' },
+    'CHAINLINK': { symbol: 'LINKUSDT', type: 'crypto' },
+    'LITECOIN': { symbol: 'LTCUSDT', type: 'crypto' },
+    'TRON': { symbol: 'TRXUSDT', type: 'crypto' },
+    'COSMOS': { symbol: 'ATOMUSDT', type: 'crypto' },
+    'SHIBA': { symbol: 'SHIBUSDT', type: 'crypto' },
     // Stocks (full names → backend handles Yahoo mapping)
-    'FACEBOOK':  { symbol: 'FACEBOOK',  type: 'stock' },
-    'APPLE':     { symbol: 'APPLE',     type: 'stock' },
-    'GOOGLE':    { symbol: 'GOOGLE',    type: 'stock' },
-    'AMAZON':    { symbol: 'AMAZON',    type: 'stock' },
-    'NETFLIX':   { symbol: 'NETFLIX',   type: 'stock' },
-    'TESLA':     { symbol: 'TESLA',     type: 'stock' },
+    'FACEBOOK': { symbol: 'FACEBOOK', type: 'stock' },
+    'APPLE': { symbol: 'APPLE', type: 'stock' },
+    'GOOGLE': { symbol: 'GOOGLE', type: 'stock' },
+    'AMAZON': { symbol: 'AMAZON', type: 'stock' },
+    'NETFLIX': { symbol: 'NETFLIX', type: 'stock' },
+    'TESLA': { symbol: 'TESLA', type: 'stock' },
     'MICROSOFT': { symbol: 'MICROSOFT', type: 'stock' },
-    'NVIDIA':    { symbol: 'NVIDIA',    type: 'stock' },
-    'INTEL':     { symbol: 'INTEL',     type: 'stock' },
-    'ALIBABA':   { symbol: 'ALIBABA',   type: 'stock' },
-    'META':      { symbol: 'META',      type: 'stock' },
-    'VISA':      { symbol: 'VISA',      type: 'stock' },
+    'NVIDIA': { symbol: 'NVIDIA', type: 'stock' },
+    'INTEL': { symbol: 'INTEL', type: 'stock' },
+    'ALIBABA': { symbol: 'ALIBABA', type: 'stock' },
+    'META': { symbol: 'META', type: 'stock' },
+    'VISA': { symbol: 'VISA', type: 'stock' },
     // Commodities (full names)
-    'GOLD':      { symbol: 'GOLD',      type: 'commodity' },
-    'SILVER':    { symbol: 'SILVER',    type: 'commodity' },
-    'CRUDEOIL':  { symbol: 'OIL',       type: 'commodity' },
-    'NATURALGAS':{ symbol: 'NATGAS',    type: 'commodity' },
-    'BRENTOIL':  { symbol: 'UKBRENT',   type: 'commodity' },
+    'GOLD': { symbol: 'GOLD', type: 'commodity' },
+    'SILVER': { symbol: 'SILVER', type: 'commodity' },
+    'CRUDEOIL': { symbol: 'OIL', type: 'commodity' },
+    'NATURALGAS': { symbol: 'NATGAS', type: 'commodity' },
+    'BRENTOIL': { symbol: 'UKBRENT', type: 'commodity' },
   };
 
   // Known commodity keywords (for partial matching fallback)
