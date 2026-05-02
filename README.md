@@ -170,7 +170,7 @@ graph TD
 
 ```bash
 # Clone and navigate
-cd "stock analyzer/backend"
+cd "backend"
 
 # Create virtual environment
 python -m venv venv
@@ -178,14 +178,14 @@ venv\Scripts\activate         # Windows
 # source venv/bin/activate    # Linux/Mac
 
 # Install dependencies
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
-# (Optional) Configure environment
-cp ../.env.example ../.env
+# Configure environment
+cp .env.example .env
 # Edit .env as needed
 
 # Start the server
-uvicorn main:app --host 127.0.0.1 --port 8000
+uvicorn main:app
 ```
 
 The API will be available at `http://127.0.0.1:8000`.
