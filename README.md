@@ -466,8 +466,6 @@ After deploying, update the Chrome extension's API URL via the popup settings.
 ```
 stock-analyzer/
 │
-├── 📄 .env.example              # Environment variable template
-├── 📄 .gitignore
 ├── 📄 README.md
 │
 ├── 🧩 extension/                # Chrome Extension (Manifest V3)
@@ -508,7 +506,10 @@ stock-analyzer/
 │   │   ├── locks.py             # Per-symbol async lock manager
 │   │   └── rate_limiter.py      # Sliding window rate limiter middleware
 │   │
-│   └── tests/                   # pytest test suite
+│   ├── tests/                   # pytest test suite
+│   │
+│   ├── .env.example             # Environment variable template
+│   └── .gitignore
 │
 └── 🧠 ml/                      # ML Training
     ├── train_lstm.py            # Training script (fetches data from Binance)
