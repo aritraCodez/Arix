@@ -306,7 +306,7 @@ Health check endpoint.
 
 ---
 
-## 🗂️ Supported Assets
+## 🗂️ Supported Assets Example
 
 ### Crypto (via Binance API — real-time)
 `BTCUSDT` `ETHUSDT` `BNBUSDT` `SOLUSDT` `XRPUSDT` `DOGEUSDT` `ADAUSDT` `AVAXUSDT` `DOTUSDT` `MATICUSDT` `LINKUSDT` `LTCUSDT` `SHIBUSDT` `TRXUSDT` `ATOMUSDT`
