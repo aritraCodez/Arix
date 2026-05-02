@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
           chrome.tabs.sendMessage(tab.id, {
             type: 'CONFIG_UPDATED',
             config: { baseUrl, mlEnabled: mlToggle.checked }
-          }).catch(() => {});
+          }).catch(() => { });
         });
       });
     });
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
           chrome.tabs.sendMessage(tab.id, {
             type: 'CONFIG_UPDATED',
             config: { baseUrl, mlEnabled: mlToggle.checked },
-          }).catch(() => {}); // Ignore tabs where script isn't loaded
+          }).catch(() => { }); // Ignore tabs where script isn't loaded
         });
       });
     });
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnTest.disabled = true;
 
     try {
-      const resp = await fetch(`${baseUrl}/health`, { 
+      const resp = await fetch(`${baseUrl}/health`, {
         method: 'GET',
         signal: AbortSignal.timeout(5000),
       });
