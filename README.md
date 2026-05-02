@@ -1,4 +1,4 @@
-# 📈 Trading Signal Analyzer
+# 📈 Arix - Trading Signal Analyzer
 
 > A production-grade **Chrome Extension** (Manifest V3) + **FastAPI** backend that delivers real-time trading signals (UP / DOWN / NO_TRADE) with confidence scoring, powered by technical analysis and an optional LSTM deep learning model.
 
