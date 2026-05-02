@@ -162,7 +162,10 @@ def main():
     parser.add_argument("--limit", type=int, default=1000, help="Number of candles")
     parser.add_argument("--epochs", type=int, default=50, help="Training epochs")
     parser.add_argument("--seq-length", type=int, default=50, help="Sequence length")
-    parser.add_argument("--output", default="saved_models/lstm_model.pt", help="Model save path")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    default_output = os.path.join(script_dir, "saved_models", "lstm_model.pt")
+
+    parser.add_argument("--output", default=default_output, help="Model save path")
     args = parser.parse_args()
 
     # Fetch data
