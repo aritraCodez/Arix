@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal Analyzer Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0d111c;
+      color: #e0e0e5;
+      font-size: 13px;
+      padding: 0;
+    }
+
+    .popup-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .popup-logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #448AFF, #B388FF);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .popup-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .popup-version {
+      font-size: 10px;
+      color: #636B80;
+      margin-left: auto;
+    }
+
+    .popup-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #636B80;
+    }
+
+    .field-input {
+      padding: 9px 12px;
+      background: rgba(30, 38, 60, 0.85);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      color: #e0e0e5;
+      font-family: inherit;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field-input:focus {
+      border-color: #448AFF;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #448AFF, #5C6BC0);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: #9BA3B5;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      color: #e0e0e5;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .status-message {
+      font-size: 11px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .status-message.success {
+      display: block;
+      background: rgba(0, 230, 118, 0.1);
+      color: #00E676;
+      border: 1px solid rgba(0, 230, 118, 0.2);
+    }
+
+    .status-message.error {
+      display: block;
+      background: rgba(255, 23, 68, 0.1);
+      color: #FF1744;
+      border: 1px solid rgba(255, 23, 68, 0.2);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: #448AFF;
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(16px);
+    }
+
+    .popup-footer {
+      padding: 12px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      font-size: 10px;
+      color: #636B80;
+    }
+  </style>
+</head>
+<body>
+  <div class="popup-header">
+    <div class="popup-logo">S</div>
+    <div class="popup-title">Signal Analyzer</div>
+    <div class="popup-version">v1.0.0</div>
+  </div>
+
+  <div class="popup-body">
+    <div class="field">
+      <div class="field-label">Backend API URL</div>
+      <input type="text" class="field-input" id="apiUrl" placeholder="http://localhost:8000">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btnSave" style="flex:1">Save Settings</button>
+      <button class="btn btn-secondary" id="btnTest">Test</button>
+    </div>
+
+    <div class="status-message" id="statusMsg"></div>
+
+    <div class="field">
+      <div class="toggle-row">
+        <div class="field-label" style="margin:0">Enable ML Predictions</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="mlToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup-footer">
+    Trading Signal Analyzer · Educational Use Only
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
