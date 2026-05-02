@@ -58,6 +58,7 @@ class SignalResult:
     down_percent: int
     indicators: dict
     ml_prediction: Optional[dict]
+    ai_analysis: Optional[dict]
     risk_level: str
     asset: dict
     timestamp: str
@@ -71,6 +72,7 @@ class SignalResult:
             "down_percent": self.down_percent,
             "indicators": self.indicators,
             "ml_prediction": self.ml_prediction,
+            "ai_analysis": self.ai_analysis,
             "risk_level": self.risk_level,
             "asset": self.asset,
             "timestamp": self.timestamp,
@@ -122,18 +124,20 @@ def generate_signal(
     indicators: IndicatorResults,
     risk_level: RiskLevel = RiskLevel.MEDIUM,
     ml_probability: Optional[float] = None,
+    ai_result: Optional[dict] = None,
     symbol: str = "",
     asset_type: str = "",
     timestamp: str = "",
 ) -> SignalResult:
     """
-    Combine technical indicators and optional ML prediction into a
-    weighted trading signal.
+    Combine technical indicators, optional ML prediction, and optional AI analysis
+    into a weighted trading signal.
     
     Args:
         indicators: Computed indicator results
         risk_level: Risk tolerance level
         ml_probability: Optional ML predicted probability of upward movement [0, 1]
+        ai_result: Optional AI analysis dict with 'score' key [-1.0, 1.0]
         symbol: Asset symbol
         asset_type: Asset type string
         timestamp: ISO format timestamp
@@ -142,26 +146,32 @@ def generate_signal(
         SignalResult with signal direction, confidence, and metadata
     """
     use_ml = ml_probability is not None
+    use_ai = ai_result is not None and "score" in (ai_result or {})
     
     # Calculate individual scores
     rsi_score = _rsi_to_refined_score(indicators.rsi.value, indicators.rsi.signal)
     macd_score = _indicator_to_score(indicators.macd.signal)
     ema_score = _indicator_to_score(indicators.ema_trend.signal)
     # 3. Calculate Confidence (Weighted Average)
-    # Weights optimized for 1m scalping
-    if use_ml:
+    # Weights optimized for 1m scalping — redistributed based on available sources
+    if use_ml and use_ai:
         weights = {
-            "rsi": 0.20,
-            "macd": 0.20,
-            "ema": 0.30,
-            "bollinger": 0.10,
-            "ml": 0.20
+            "rsi": 0.15, "macd": 0.15, "ema": 0.20,
+            "bollinger": 0.10, "ml": 0.15, "ai": 0.25
+        }
+    elif use_ai:
+        weights = {
+            "rsi": 0.25, "macd": 0.25, "ema": 0.25,
+            "bollinger": 0.10, "ai": 0.15
+        }
+    elif use_ml:
+        weights = {
+            "rsi": 0.20, "macd": 0.20, "ema": 0.30,
+            "bollinger": 0.10, "ml": 0.20
         }
     else:
         weights = {
-            "rsi": 0.25,
-            "macd": 0.25,
-            "ema": 0.40,
+            "rsi": 0.25, "macd": 0.25, "ema": 0.40,
             "bollinger": 0.10
         }
     
@@ -182,6 +192,10 @@ def generate_signal(
     if use_ml:
         ml_score = (ml_probability - 0.5) * 2.0
         weighted_score += weights["ml"] * ml_score
+
+    if use_ai:
+        ai_score_val = float(ai_result["score"])
+        weighted_score += weights["ai"] * ai_score_val
 
     # Add Micro-Momentum (Real-time flicker)
     # Compare current close to previous close for immediate sentiment
@@ -224,10 +238,22 @@ def generate_signal(
             "enabled": False,
         }
 
+    # Build AI analysis dict
+    ai_analysis = None
+    if use_ai:
+        ai_analysis = ai_result  # already has score, reasoning, confidence, model, etc.
+    else:
+        ai_analysis = {
+            "enabled": False,
+            "score": None,
+            "reasoning": None,
+        }
+
     logger.info(
         f"Signal for {symbol}: {signal.value} (confidence={confidence}%, "
         f"risk={risk_level.value}, rsi={rsi_score:.2f}, macd={macd_score:.2f}, "
-        f"ema={ema_score:.2f}, ml={'enabled' if use_ml else 'disabled'})"
+        f"ema={ema_score:.2f}, ml={'enabled' if use_ml else 'disabled'}, "
+        f"ai={'enabled' if use_ai else 'disabled'})"
     )
 
     return SignalResult(
@@ -238,6 +264,7 @@ def generate_signal(
         down_percent=down_percent,
         indicators=indicators.to_dict(),
         ml_prediction=ml_prediction,
+        ai_analysis=ai_analysis,
         risk_level=risk_level.value,
         asset={"symbol": symbol, "type": asset_type},
         timestamp=timestamp,

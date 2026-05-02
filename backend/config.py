@@ -24,6 +24,13 @@ class Settings(BaseSettings):
     ML_ENABLED: bool
     ML_MODEL_PATH: str
 
+    # AI (Gemini)
+    GEMINI_API_KEY: str
+    GEMINI_MODEL: str
+    AI_ENABLED: bool
+    AI_ANALYSIS_TTL: int
+    AI_SESSION_MINUTES: int
+
     # Server
     HOST: str
     PORT: int

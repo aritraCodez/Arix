@@ -206,7 +206,7 @@
   <div class="popup-header">
     <div class="popup-logo">S</div>
     <div class="popup-title">Signal Analyzer</div>
-    <div class="popup-version">v1.0.0</div>
+    <div class="popup-version">v1.1.0</div>
   </div>
 
   <div class="popup-body">
@@ -231,6 +231,37 @@
         </label>
       </div>
     </div>
+
+    <div class="field">
+      <div class="toggle-row">
+        <div class="field-label" style="margin:0">Enable AI Analysis</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="aiToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">AI Model</div>
+      <select class="field-input" id="aiModel">
+        <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+        <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="field-label">AI Session (minutes, 0 = unlimited)</div>
+      <input type="number" class="field-input" id="aiSessionMin" min="0" value="0" placeholder="0 = unlimited">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btnAiStart" style="flex:1">▶ Start AI</button>
+      <button class="btn btn-secondary" id="btnAiStop" style="flex:1">⏹ Stop AI</button>
+    </div>
+
+    <div class="status-message" id="aiStatusMsg"></div>
   </div>
 
   <div class="popup-footer">
