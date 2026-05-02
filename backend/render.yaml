@@ -5,12 +5,9 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: ML_ENABLED
-        value: "true"
-      - key: CORS_ORIGINS
-        value: '["*"]'
-      - key: RATE_LIMIT_PER_MINUTE
-        value: "100"
+      - key: PORT
+        fromRender: PORT
+      - file: .env
     rootDir: backend
     plan: free
     healthCheckPath: /health
