@@ -46,6 +46,8 @@
     .signal-orb { position: relative; width: 72px; height: 72px; background: #fff; border: 1px solid #eee; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; user-select: none; flex-shrink: 0; }
     .orb-ml-tag { position: absolute; top: 6px; left: 6px; font-size: 6px; font-weight: 900; padding: 1px 3px; border-radius: 3px; background: #f0f0f0; color: #aaa; transition: all 0.3s; line-height: 1; }
     .orb-ml-tag.active { background: #2ecc71; color: #fff; }
+    .orb-ai-tag { position: absolute; top: 6px; right: 6px; font-size: 6px; font-weight: 900; padding: 1px 3px; border-radius: 3px; background: #f0f0f0; color: #aaa; transition: all 0.3s; line-height: 1; }
+    .orb-ai-tag.active { background: #9b59b6; color: #fff; }
     .signal-orb.up { border-bottom: 4px solid #2ecc71; }
     .signal-orb.down { border-bottom: 4px solid #e74c3c; }
     .orb-asset { font-size: 10px; font-weight: 700; color: #666; margin-bottom: 2px; }
@@ -65,6 +67,10 @@
     .stat-item { display: flex; justify-content: space-between; font-size: 11px; }
     .stat-item label { color: #666; font-weight: 600; }
     .stat-item span { color: #333; font-weight: 700; }
+    .ai-reasoning { border-top: 1px solid #f0f0f0; padding-top: 10px; margin-top: 8px; }
+    .ai-reasoning-label { font-size: 9px; font-weight: 800; color: #9b59b6; margin-bottom: 4px; }
+    .ai-reasoning-text { font-size: 10px; color: #555; line-height: 1.4; }
+    .ai-session { font-size: 9px; color: #9b59b6; font-weight: 600; margin-top: 4px; }
   `;
 
   // --- Setup ---
@@ -74,6 +80,7 @@
     signal: null,
     loading: true,
     mlEnabled: true,
+    aiEnabled: true,
     baseUrl: CONFIG.API_BASE_URL
   };
 
@@ -83,6 +90,7 @@
       if (res.apiConfig) {
         state.baseUrl = res.apiConfig.baseUrl || CONFIG.API_BASE_URL;
         state.mlEnabled = res.apiConfig.mlEnabled !== undefined ? res.apiConfig.mlEnabled : true;
+        state.aiEnabled = res.apiConfig.aiEnabled !== undefined ? res.apiConfig.aiEnabled : true;
       }
     });
   }
@@ -93,6 +101,7 @@
     if (msg.type === 'CONFIG_UPDATED') {
       state.baseUrl = msg.config.baseUrl;
       state.mlEnabled = msg.config.mlEnabled;
+      state.aiEnabled = msg.config.aiEnabled !== undefined ? msg.config.aiEnabled : true;
       fetchSignal(); // Immediate refresh on save
     }
   });
@@ -108,6 +117,7 @@
   panel.innerHTML = `
     <div class="signal-orb" id="signalOrb">
       <div class="orb-ml-tag" id="orbMlTag">ML</div>
+      <div class="orb-ai-tag" id="orbAiTag">AI</div>
       <div class="orb-asset" id="orbAsset">...</div>
       <div class="orb-stats" id="orbStats">--%</div>
       <div class="orb-arrow" id="orbArrow">—</div>
@@ -132,6 +142,11 @@
         <div class="stat-item"><label>EMA (Trend)</label><span id="statEma">—</span></div>
         <div class="stat-item"><label>Latency</label><span id="statLatency">0ms</span></div>
       </div>
+      <div class="ai-reasoning" id="aiReasoningBlock" style="display:none">
+        <div class="ai-reasoning-label">🤖 AI ANALYSIS</div>
+        <div class="ai-reasoning-text" id="aiReasoningText">—</div>
+        <div class="ai-session" id="aiSessionInfo"></div>
+      </div>
     </div>
   `;
   shadow.appendChild(panel);
@@ -139,9 +154,12 @@
   const $ = (s) => shadow.querySelector(s);
   const el = {
     panel, signalOrb: $('#signalOrb'), orbAsset: $('#orbAsset'), orbStats: $('#orbStats'),
-    orbArrow: $('#orbArrow'), orbMlTag: $('#orbMlTag'), predUpVal: $('#predUpVal'), predDownVal: $('#predDownVal'),
+    orbArrow: $('#orbArrow'), orbMlTag: $('#orbMlTag'), orbAiTag: $('#orbAiTag'),
+    predUpVal: $('#predUpVal'), predDownVal: $('#predDownVal'),
     statRsi: $('#statRsi'), statMacd: $('#statMacd'), statEma: $('#statEma'),
-    statLatency: $('#statLatency'), detailsTime: $('#detailsTime')
+    statLatency: $('#statLatency'), detailsTime: $('#detailsTime'),
+    aiReasoningBlock: $('#aiReasoningBlock'), aiReasoningText: $('#aiReasoningText'),
+    aiSessionInfo: $('#aiSessionInfo')
   };
 
   // --- Interaction ---
@@ -184,7 +202,7 @@
 
     isFetching = true;
     const start = performance.now();
-    const url = `${state.baseUrl}/signal?symbol=${state.selectedAsset}&type=${state.selectedType}&risk=medium&use_ml=${state.mlEnabled}&_t=${Date.now()}`;
+    const url = `${state.baseUrl}/signal?symbol=${state.selectedAsset}&type=${state.selectedType}&risk=medium&use_ml=${state.mlEnabled}&use_ai=${state.aiEnabled}&_t=${Date.now()}`;
 
     chrome.runtime.sendMessage({ type: 'FETCH_SIGNAL', url }, (res) => {
       isFetching = false;
@@ -246,6 +264,26 @@
     } else {
       el.orbMlTag.classList.remove('active');
       el.orbMlTag.title = "Machine Learning Disabled";
+    }
+
+    // Update AI tag status
+    const aiActive = d && d.ai_analysis && d.ai_analysis.enabled;
+    if (aiActive) {
+      el.orbAiTag.classList.add('active');
+      el.orbAiTag.title = "Gemini AI Active";
+    } else {
+      el.orbAiTag.classList.remove('active');
+      el.orbAiTag.title = "AI Disabled";
+    }
+
+    // AI reasoning block
+    if (aiActive && d.ai_analysis.reasoning) {
+      el.aiReasoningBlock.style.display = 'block';
+      el.aiReasoningText.textContent = d.ai_analysis.reasoning;
+      const remaining = d.ai_analysis.session_remaining;
+      el.aiSessionInfo.textContent = remaining ? `Session: ${remaining} remaining` : 'Session: ∞';
+    } else {
+      el.aiReasoningBlock.style.display = 'none';
     }
     
     // Detailed rows

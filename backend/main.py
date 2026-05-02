@@ -11,7 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
 from routers.signals import router as signals_router
+from routers.ai import router as ai_router
 from services.ml_predictor import init_predictor
+from services.ai_analyst import init_ai_analyst
 from utils.rate_limiter import RateLimiterMiddleware
 
 # Configure logging
@@ -38,6 +40,23 @@ async def lifespan(app: FastAPI):
     else:
         logger.info("ML predictor disabled (set ML_ENABLED=true to enable)")
 
+    # Initialize AI analyst
+    analyst = init_ai_analyst(
+        api_key=settings.GEMINI_API_KEY,
+        model=settings.GEMINI_MODEL,
+        enabled=settings.AI_ENABLED,
+        analysis_ttl=settings.AI_ANALYSIS_TTL,
+        session_minutes=settings.AI_SESSION_MINUTES,
+    )
+    if analyst.enabled:
+        logger.info(
+            f"🤖 AI analyst ready (model={settings.GEMINI_MODEL}, "
+            f"session={'unlimited' if settings.AI_SESSION_MINUTES == 0 else f'{settings.AI_SESSION_MINUTES}min'}, "
+            f"ttl={settings.AI_ANALYSIS_TTL}s)"
+        )
+    else:
+        logger.info("AI analyst disabled (set AI_ENABLED=true and provide GEMINI_API_KEY)")
+
     logger.info("🚀 Trading Signal API started")
     logger.info(f"   Cache TTL: crypto={settings.CACHE_TTL_CRYPTO}s, other={settings.CACHE_TTL_OTHER}s")
     logger.info(f"   Rate limit: {settings.RATE_LIMIT_PER_MINUTE} req/min")
@@ -50,8 +69,8 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app
 app = FastAPI(
     title="Trading Signal API",
-    description="Real-time trading signals powered by technical analysis and optional ML predictions",
-    version="1.0.0",
+    description="Real-time trading signals powered by technical analysis, ML predictions, and Gemini AI",
+    version="1.1.0",
     lifespan=lifespan,
 )
 
@@ -75,6 +94,7 @@ app.add_middleware(
 
 # --- Routers ---
 app.include_router(signals_router)
+app.include_router(ai_router)
 
 
 # --- Health Check ---
@@ -83,8 +103,10 @@ async def health_check():
     """Health check endpoint for monitoring and deployment."""
     return {
         "status": "healthy",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "ml_enabled": settings.ML_ENABLED,
+        "ai_enabled": settings.AI_ENABLED,
+        "ai_model": settings.GEMINI_MODEL,
     }
 
 
@@ -97,6 +119,5 @@ if __name__ == "__main__":
         # reload=True,
         # reload_dirs=["."],
         # reload_excludes=["venv", "__pycache__"],
-        # reload_includes=["*.py"],x
+        # reload_includes=["*.py"],
     )
-
