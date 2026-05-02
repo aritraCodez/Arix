@@ -514,7 +514,7 @@ stock-analyzer/
 └── 🧠 ml/                      # ML Training
     ├── train_lstm.py            # Training script (fetches data from Binance)
     └── saved_models/
-        └── lstm_model.pt        # Trained model weights
+        └── lstm_model.pt        # Trained model weight
 ```
 
 ### Component Dependency Graph
