@@ -1,5 +1,9 @@
 
 
+https://github.com/user-attachments/assets/2e309b92-e576-4533-8b92-4dad4f93ca4e
+
+
+
 
 
 # 📈 Arix - Trading Signal Analyzer
