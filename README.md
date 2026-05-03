@@ -1,11 +1,3 @@
-
-
-https://github.com/user-attachments/assets/2e309b92-e576-4533-8b92-4dad4f93ca4e
-
-
-
-
-
 # 📈 Arix - Trading Signal Analyzer
 
 > A production-grade **Chrome Extension** (Manifest V3) + **FastAPI** backend that delivers real-time trading signals (UP / DOWN / NO_TRADE) with confidence scoring, powered by technical analysis and an optional LSTM deep learning model.
@@ -644,7 +636,9 @@ graph TD
 
 ## 🎥 Live Trading Demonstration
 
-In the video demonstration (`[ui/arix ui/public/demonew.mp4](https://github.com/user-attachments/assets/a7a03543-7b39-4daa-9682-0eb4ecacb1fb)`), I showcase Arix in action. **I made two trades using this prediction bot — one resulted in a loss, and the other was a win**, illustrating the realistic performance, real-time signal generation, and practical workflow of the system on a live chart.
+In the video demonstration, I showcase Arix in action. **I made two trades using this prediction bot — one resulted in a loss, and the other was a win**, illustrating the realistic performance, real-time signal generation, and practical workflow of the system on a live chart.
+
+https://github.com/user-attachments/assets/2e309b92-e576-4533-8b92-4dad4f93ca4e
 
 ---
 
