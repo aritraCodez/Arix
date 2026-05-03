@@ -87,16 +87,3 @@ async def health_check():
         "ml_enabled": settings.ML_ENABLED,
     }
 
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "main:app",
-        host=settings.HOST,
-        port=settings.PORT,
-        # reload=True,
-        # reload_dirs=["."],
-        # reload_excludes=["venv", "__pycache__"],
-        # reload_includes=["*.py"],x
-    )
-
