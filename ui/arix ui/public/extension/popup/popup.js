@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnTest = document.getElementById('btnTest');
   const statusMsg = document.getElementById('statusMsg');
   const mlToggle = document.getElementById('mlToggle');
-  const baseUrl = 'http://127.0.0.1:8000';
+  // const baseUrl = 'http://127.0.0.1:8000';//local test
+  const baseUrl = 'https://arix-wiff.onrender.com';//live server
 
   // Load saved settings
   chrome.storage.local.get(['apiConfig'], (result) => {

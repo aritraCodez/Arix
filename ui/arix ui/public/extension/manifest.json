@@ -10,7 +10,8 @@
   "host_permissions": [
     "http://localhost:8000/*",
     "http://127.0.0.1:8000/*",
-    "https://*.render.com/*"
+    "https://*.render.com/*",
+    "https://*.onrender.com/*"
   ],
   "background": {
     "service_worker": "background/service-worker.js"

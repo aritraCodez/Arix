@@ -9,7 +9,8 @@ chrome.runtime.onInstalled.addListener(() => {
     if (!result.apiConfig) {
       chrome.storage.local.set({
         apiConfig: {
-          baseUrl: 'http://127.0.0.1:8000',
+          // baseUrl: 'http://127.0.0.1:8000', //local test
+          baseUrl: 'https://arix-wiff.onrender.com',//live server
           mlEnabled: true,
         },
       });
