@@ -495,7 +495,7 @@ After deploying, update the Chrome extension's API URL via the popup settings.
 ## 📁 Project Structure
 
 ```
-stock-analyzer/
+arix-analyzer/
 │
 ├── 📄 README.md 
 ├── 🎨 ui/arix ui/               # React Dashboard (Vite + Tailwind)
