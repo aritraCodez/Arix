@@ -188,7 +188,9 @@ cp .env.example .env
 uvicorn main:app
 ```
 
-The API will be available at `http://127.0.0.1:8000`.
+The local API will be available at `http://127.0.0.1:8000`.
+
+🎉 **A live, production API is also running at `https://arix-wiff.onrender.com`**
 
 **Verify it's working:**
 ```bash
@@ -197,6 +199,12 @@ curl http://127.0.0.1:8000/health
 
 # Test signal (crypto)
 curl "http://127.0.0.1:8000/signal?symbol=BTCUSDT&type=crypto&risk=medium"
+```
+
+**Verify it's working (Live):**
+```bash
+# Health check
+curl https://arix-wiff.onrender.com/health
 
 # Test signal (forex)
 curl "http://127.0.0.1:8000/signal?symbol=EURUSD&type=forex&risk=medium"
