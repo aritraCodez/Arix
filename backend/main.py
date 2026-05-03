@@ -76,6 +76,9 @@ app.add_middleware(
 # --- Routers ---
 app.include_router(signals_router)
 
+@app.get("/")
+def read_root():
+    return {"message": "Authentication API is running"}
 
 # --- Health Check ---
 @app.get("/health")
