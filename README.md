@@ -202,15 +202,46 @@ curl "http://127.0.0.1:8000/signal?symbol=BTCUSDT&type=crypto&risk=medium"
 curl "http://127.0.0.1:8000/signal?symbol=EURUSD&type=forex&risk=medium"
 ```
 
-### 2. Chrome Extension Setup
+### 2. Frontend Dashboard Setup
 
-1. Open Chrome → navigate to `chrome://extensions`
-2. Enable **Developer mode** (toggle in top-right)
-3. Click **Load unpacked**
-4. Select the `extension/` folder
-5. Navigate to `qxbroker.com` — the signal orb appears in the top-right corner
+The project includes a professional React dashboard for downloading and managing the extension.
 
-### 3. Configure (Optional)
+```bash
+# Navigate to UI directory
+cd "ui/arix ui"
+
+# Install dependencies
+npm install
+
+# Start the dev server
+npm run dev
+```
+
+The dashboard will be available at `http://localhost:5173`.
+
+### 3. Chrome Extension Setup
+
+You can install the extension in two ways:
+
+**Option A: via Dashboard (Recommended)**
+1. Ensure the Frontend Dashboard is running.
+2. Navigate to `http://localhost:5173`.
+3. Click the **"Download Extension (.zip)"** button.
+4. Extract the downloaded ZIP file to a folder.
+5. Open Chrome → `chrome://extensions`.
+6. Enable **Developer mode**.
+7. Click **Load unpacked** and select the extracted folder.
+
+**Option B: Manual Load**
+1. Open Chrome → `chrome://extensions`.
+2. Enable **Developer mode**.
+3. Click **Load unpacked**.
+4. Select the `ui/arix ui/public/extension` folder.
+
+**Verify Installation:**
+Navigate to `qxbroker.com` — the Arix signal orb will automatically inject into the trading interface.
+
+### 4. Configure (Optional)
 
 Click the extension icon in the Chrome toolbar to:
 - **Change the API URL** (for remote deployment)
@@ -467,20 +498,21 @@ After deploying, update the Chrome extension's API URL via the popup settings.
 stock-analyzer/
 │
 ├── 📄 README.md 
-│
-├── 🧩 extension/                # Chrome Extension (Manifest V3)
-│   ├── manifest.json            # Extension manifest & permissions
-│   ├── config.js                # Default configuration constants
-│   ├── icons/                   # Extension icons (16/48/128px)
-│   ├── background/
-│   │   └── service-worker.js    # Message relay + fetch proxy (bypasses CSP)
-│   ├── content/
-│   │   ├── content.js           # Main content script — auto-detection,
-│   │   │                        #   polling, rendering (Shadow DOM)
-│   │   └── panel.css            # HUD panel styles (glassmorphism dark theme)
-│   └── popup/
-│       ├── popup.html           # Settings popup UI
-│       └── popup.js             # Settings save/load/test logic
+├── 🎨 ui/arix ui/               # React Dashboard (Vite + Tailwind)
+│   ├── public/extension/        # Chrome Extension Source (Manifest V3)
+│   │   ├── manifest.json        # Extension manifest & permissions
+│   │   ├── config.js            # Default configuration constants
+│   │   ├── icons/               # Extension icons (16/48/128px)
+│   │   ├── background/
+│   │   │   └── service-worker.js# Message relay + fetch proxy
+│   │   ├── content/
+│   │   │   ├── content.js       # Main content script (Shadow DOM)
+│   │   │   └── panel.css        # HUD panel styles
+│   │   └── popup/
+│   │       ├── popup.html       # Settings popup UI
+│   │       └── popup.js         # Settings save/load/test logic
+│   ├── src/Dashboard/           # Dashboard Components
+│   └── components.json          # Shadcn/ui configuration
 │
 ├── ⚡ backend/                  # FastAPI Backend
 │   ├── main.py                  # App entry point, lifespan, middleware
@@ -599,6 +631,12 @@ graph TD
 | **HTTP Client** | httpx (async), yfinance |
 | **Config** | Pydantic Settings + .env |
 | **Deployment** | Docker, Render.com |
+
+---
+
+## 🎥 Live Trading Demonstration
+
+In the video demonstration (`ui/arix ui/public/demonew.mp4`), I showcase Arix in action. **I made two trades using this prediction bot — one resulted in a loss, and the other was a win**, illustrating the realistic performance, real-time signal generation, and practical workflow of the system on a live chart.
 
 ---
 
