@@ -124,7 +124,7 @@ export default function HomePage() {
               </svg>
             </a>
             <Badge variant="outline" className="border-purple-500/50 text-purple-400 bg-purple-500/10 px-3 py-1">
-              v1.1.0 Stable
+              v1.1.1 Stable
             </Badge>
           </div>
         </nav>
