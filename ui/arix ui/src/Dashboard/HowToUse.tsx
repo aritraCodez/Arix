@@ -86,7 +86,7 @@ export default function HowToUse() {
                 loop
                 playsInline
               >
-                <source src="/demo.mp4" type="video/mp4" />
+                <source src="/demonew.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
