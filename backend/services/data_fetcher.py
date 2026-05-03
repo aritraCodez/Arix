@@ -212,7 +212,7 @@ async def fetch_ohlcv(
         # Yahoo Finance uses period-based fetching
         # Map limit to appropriate period
         period_map = {
-            "1m": "1d",    # 1-min candles: get 1 day of data
+            "1m": "5d",    # 1-min candles: get 5 days of data to survive weekends
             "5m": "5d",    # 5-min candles: get 5 days
             "15m": "5d",   # 15-min candles: get 5 days
             "1h": "1mo",   # 1-hour candles: get 1 month
